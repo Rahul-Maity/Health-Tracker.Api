@@ -1,4 +1,5 @@
-﻿using HealthTracker.Entities.Dtos.Incoming;
+﻿using HealthTracker.DataService.IConfiguration;
+using HealthTracker.Entities.Dtos.Incoming;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,18 +11,22 @@ public class UsersController : ControllerBase
 
     
 {
-    private readonly AppDbContext _context;
-    public UsersController(AppDbContext context)
+    // private readonly AppDbContext _context;
+
+    private IUnitOfWork _unitOfWork;
+    public UsersController(IUnitOfWork unitOfWork)//AppDbContext context)
     {
-        _context = context;
+       // _context = context;
+       _unitOfWork = unitOfWork;
     }
 
     //Get All
 
     [HttpGet]
-    public IActionResult GetUsers()
+    [HttpHead]
+    public async  Task<IActionResult> GetUsers()
     {
-        var users = _context.Users.Where(x=>x.Status ==1).ToList();
+      var users =await _unitOfWork.Users.All();
         return Ok(users);
     }
 
@@ -40,8 +45,8 @@ public class UsersController : ControllerBase
         _user.Country = user.Country;
         _user.Status = 1;
         
-        _context.Users.Add(_user);
-        _context.SaveChanges();
+       // _context.Users.Add(_user);
+        //_context.SaveChanges();
 
         return Ok();//return a 201
 
@@ -54,7 +59,9 @@ public class UsersController : ControllerBase
     [Route("GetUser")]
     public IActionResult GetUser(Guid id)
     {
-        var user = _context.Users.FirstOrDefault(x => x.Id == id);
-        return Ok(user);
+       // var user = _context.Users.FirstOrDefault(x => x.Id == id);
+
+
+        return Ok();
     }
 }

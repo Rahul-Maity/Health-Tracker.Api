@@ -1,3 +1,6 @@
+using HealthTracker.DataService.Data;
+using HealthTracker.DataService.IConfiguration;
+
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 );
 
-
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 
