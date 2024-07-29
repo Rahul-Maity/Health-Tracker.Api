@@ -5,20 +5,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTracker.Api.Controllers.v1;
-[Route("api/{version:apiVersion}/[controller]")]
-[ApiController]
-[ApiVersion("1.0")]
-public class UsersController : ControllerBase
+
+public class UsersController : BaseController
 
 
 {
 
 
-    private IUnitOfWork _unitOfWork;
-    public UsersController(IUnitOfWork unitOfWork)
+   
+    public UsersController(IUnitOfWork unitOfWork):base(unitOfWork)
     {
 
-        _unitOfWork = unitOfWork;
+       
     }
 
     //Get All
