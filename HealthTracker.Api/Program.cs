@@ -1,6 +1,7 @@
 using HealthTracker.DataService.Data;
 using HealthTracker.DataService.IConfiguration;
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+
+builder.Services.AddApiVersioning(option =>
+{
+    //provides to the client different api versions that we have
+    option.ReportApiVersions = true;
+
+
+    //this will allow the api to provide automatically a default version
+    option.AssumeDefaultVersionWhenUnspecified = true;
+
+    option.DefaultApiVersion = ApiVersion.Default;
+});
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default"))

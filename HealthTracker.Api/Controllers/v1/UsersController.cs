@@ -4,51 +4,53 @@ using HealthTracker.Entities.Dtos.Incoming;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HealthTracker.Api.Controllers;
-[Route("api/[controller]")]
+namespace HealthTracker.Api.Controllers.v1;
+[Route("api/{version:apiVersion}/[controller]")]
 [ApiController]
+[ApiVersion("1.0")]
 public class UsersController : ControllerBase
 
-    
+
 {
-    // private readonly AppDbContext _context;
+
 
     private IUnitOfWork _unitOfWork;
-    public UsersController(IUnitOfWork unitOfWork)//AppDbContext context)
+    public UsersController(IUnitOfWork unitOfWork)
     {
-       // _context = context;
-       _unitOfWork = unitOfWork;
+
+        _unitOfWork = unitOfWork;
     }
 
     //Get All
 
     [HttpGet]
     [HttpHead]
-    public async  Task<IActionResult> GetUsers()
+    public async Task<IActionResult> GetUsers()
     {
-      var users =await _unitOfWork.Users.All();
+        var users = await _unitOfWork.Users.All();
         return Ok(users);
     }
 
 
     //Post
     [HttpPost]
-    public IActionResult AddUser(UserDto user)
+    public async Task<IActionResult> AddUser(UserDto user)
     {
-        var _user=new User();
+        var _user = new User();
         _user.LastName = user.LastName;
         _user.FirstName = user.FirstName;
         _user.Email = user.Email;
-       
+
         _user.DateOfBirth = DateTime.Parse(user.DateOfBirth).ToUniversalTime();
         _user.Phone = user.Phone;
         _user.Country = user.Country;
         _user.Status = 1;
-        
-       // _context.Users.Add(_user);
-        //_context.SaveChanges();
 
-        return Ok();//return a 201
+        await _unitOfWork.Users.Add(_user);
+        await _unitOfWork.CompleteAsync();
+
+
+        return CreatedAtRoute("GetUser", new { id = _user.Id }, user);
 
     }
 
@@ -56,12 +58,14 @@ public class UsersController : ControllerBase
 
     //Get based on id 
     [HttpGet]
-    [Route("GetUser")]
-    public IActionResult GetUser(Guid id)
+    [Route("GetUser", Name = "GetUser")]
+    public async Task<IActionResult> GetUser(Guid id)
     {
-       // var user = _context.Users.FirstOrDefault(x => x.Id == id);
 
 
-        return Ok();
+        var user = await _unitOfWork.Users.GetById(id);
+
+
+        return Ok(user);
     }
 }
