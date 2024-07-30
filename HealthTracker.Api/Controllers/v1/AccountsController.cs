@@ -65,6 +65,33 @@ public class AccountsController:BaseController
             }
 
 
+            //Adding user to the database
+
+            var _user = new User();
+            _user.IdentityId = new Guid(newUser.Id);
+            _user.LastName = registrationDto.LastName;
+            _user.FirstName = registrationDto.FirstName;
+            _user.Email = registrationDto.Email;
+
+            _user.DateOfBirth = DateTime.UtcNow; //DateTime.Parse(user.DateOfBirth).ToUniversalTime();
+            _user.Phone = "";
+            _user.Country = "";
+            _user.Status = 1;
+
+            await _unitOfWork.Users.Add(_user);
+            await _unitOfWork.CompleteAsync();
+
+
+
+
+            var token = GenerateJwtToken(newUser);
+            return Ok(new UserRegistrationResponseDto()
+            {
+                Success = true,
+                Token = token
+            });
+
+
         }
         else
         {
@@ -97,13 +124,25 @@ public class AccountsController:BaseController
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim("Id",user.Id),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email
-                ),//unique id
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email),//unique id
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()) //used by the refresh token
 
-            });
-        }
+            }),
+            Expires = DateTime.UtcNow.AddHours(3),
+
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
+                
+
+        };
+
+        var token = jwtHandler.CreateToken(tokenDescriptor);
+
+        //convert the security object to an usable string token
+        var JwtToken = jwtHandler.WriteToken(token);
+
+        return JwtToken;
 
     }
 
