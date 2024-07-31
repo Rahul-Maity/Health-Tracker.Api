@@ -178,7 +178,7 @@ public class AccountsController:BaseController
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()) //used by the refresh token
 
             }),
-            Expires = DateTime.UtcNow.AddHours(3),
+            Expires = DateTime.UtcNow.Add(_jwtConfig.ExpiryTimeFrame),
 
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),SecurityAlgorithms.HmacSha256Signature)
