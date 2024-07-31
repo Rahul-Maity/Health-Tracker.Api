@@ -104,6 +104,55 @@ public class AccountsController:BaseController
         }
     }
 
+    [HttpPost]
+    [Route("Login")]
+    public async Task<IActionResult> Login([FromBody] UserLoginRequestDto logindto)
+    {
+        if(ModelState.IsValid)
+        {
+            var userExists = await _userManager.FindByEmailAsync(logindto.Email);
+            if(userExists is null)
+            {
+                return BadRequest(new UserLoginResponseDto()
+                {
+                    Success = false,
+                    Errors = new List<string>() { "Invalid authentication request" }
+                });
+            }
+
+            //if user exists, check password correct or not
+            var isCorrect = await _userManager.CheckPasswordAsync(userExists, logindto.Password);
+
+            if (isCorrect)
+            {
+                //generate Jwt token
+                var JwtToken = GenerateJwtToken(userExists);
+                return Ok(new UserLoginResponseDto()
+                {
+                    Success = true,
+                    Token = JwtToken
+                });
+
+            }
+            else
+            {
+                return BadRequest(new UserLoginResponseDto()
+                {
+                    Success = false,
+                    Errors = new List<string>() { "Invalid authentication request,wrong password" }
+                });
+            }
+        }
+        else
+        {
+            return BadRequest(new UserLoginResponseDto()
+            {
+                Success = false,
+                Errors = new List<string>() { "Invalid Payload" }
+            });
+        }
+    }
+
 
 
     #region
