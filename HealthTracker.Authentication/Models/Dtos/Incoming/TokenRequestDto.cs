@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace HealthTracker.Authentication.Models.Dtos.Incoming;
-public class TokenRequest
+public class TokenRequestDto
 {
 
     [Required]

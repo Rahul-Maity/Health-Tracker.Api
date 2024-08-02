@@ -17,13 +17,15 @@ public class UnitOfWork:IUnitOfWork,IDisposable
     private readonly ILogger _logger;
     public IUserRepository Users { get; private set; }
 
-    
+    public IRefreshTokenRepository RefreshTokens { get; private set; }
 
     public UnitOfWork(AppDbContext context,ILoggerFactory loggerFactory)
     {
         _context = context;
         _logger = loggerFactory.CreateLogger("db_logs");
         Users = new UserRepository(_context, _logger);
+
+        RefreshTokens = new RefreshTokenRepository(_context, _logger);
     }
 
     public async Task CompleteAsync()
