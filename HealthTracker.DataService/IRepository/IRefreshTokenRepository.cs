@@ -9,4 +9,8 @@ using HealthTracker.Entities.DbSet;
 namespace HealthTracker.DataService.IRepository;
 public interface IRefreshTokenRepository:IGenericRepository<RefreshToken>
 {
+
+    Task<RefreshToken> GetByRefreshToken(string  refreshToken);
+
+    Task<bool> MarkRefreshTokenAsUsed(RefreshToken refreshToken);
 }
