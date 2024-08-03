@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 namespace HealthTracker.DataService.IRepository;
 public interface IUserRepository:IGenericRepository<User>
 {
-
+    Task<bool>UpdateUserProfile(User user);
 }
