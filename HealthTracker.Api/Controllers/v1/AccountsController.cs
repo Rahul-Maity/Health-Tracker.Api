@@ -21,7 +21,7 @@ namespace HealthTracker.Api.Controllers.v1;
 
 public class AccountsController:BaseController
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    
     private readonly JwtConfig _jwtConfig;
 
     private readonly TokenValidationParameters _tokenValidationParameters;
@@ -34,9 +34,9 @@ public class AccountsController:BaseController
        
        IOptionsMonitor<JwtConfig>optionsMonitor
        
-        ):base(unitOfWork)
+        ):base(unitOfWork, userManager)
     {
-        _userManager = userManager;
+     
         _jwtConfig = optionsMonitor.CurrentValue;
 
         _tokenValidationParameters = tokenValidationParameters;
@@ -396,6 +396,7 @@ public class AccountsController:BaseController
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim("Id",user.Id),
+                new Claim(ClaimTypes.NameIdentifier,user.Id),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),//unique id
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()) //used by the refresh token

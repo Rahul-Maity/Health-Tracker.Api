@@ -1,5 +1,6 @@
 ﻿using HealthTracker.DataService.IConfiguration;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTracker.Api.Controllers.v1;
@@ -11,9 +12,12 @@ namespace HealthTracker.Api.Controllers.v1;
 public class BaseController : ControllerBase
 {
     public IUnitOfWork _unitOfWork;
-    public BaseController(IUnitOfWork unitOfWork)
+
+    public UserManager<IdentityUser> _userManager;
+    public BaseController(IUnitOfWork unitOfWork, UserManager<IdentityUser>userManager)
     {
         _unitOfWork = unitOfWork;
+        _userManager = userManager;
     }
 
 }

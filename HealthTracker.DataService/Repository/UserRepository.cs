@@ -32,6 +32,26 @@ public class UserRepository:GenericRepository<User>, IUserRepository
         }
     }
 
+    //action for finding by their identity id
+    public async Task<User> GetByIdentityId(Guid identityId)
+    {
+        try
+        {
+            return await dbset.Where(x => x.IdentityId == identityId && x.Status ==1)
+                
+                    .FirstOrDefaultAsync();
+       
+            
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "{Repo} GetByIdentityId has generated an error", typeof(UserRepository));
+
+            return null;
+        }
+    }
+
     public async Task<bool> UpdateUserProfile(User user)
     {
         try

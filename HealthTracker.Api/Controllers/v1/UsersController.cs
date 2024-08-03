@@ -4,6 +4,7 @@ using HealthTracker.Entities.Dtos.Incoming;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTracker.Api.Controllers.v1;
@@ -19,7 +20,7 @@ public class UsersController : BaseController
   
 
    
-    public UsersController(IUnitOfWork unitOfWork):base(unitOfWork)
+    public UsersController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager) :base(unitOfWork, userManager)
     {
 
        
