@@ -1,4 +1,6 @@
 ﻿using HealthTracker.DataService.IConfiguration;
+using HealthTracker.Entities.Dtos.Errors;
+using HealthTracker.Entities.Dtos.Generic;
 using HealthTracker.Entities.Dtos.Incoming.Profile;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,18 +28,45 @@ public class ProfileController:BaseController
     {
 
         var LoggedInUser = await _userManager.GetUserAsync(HttpContext.User);
-        if(LoggedInUser is null)
+        var result = new Result<User>();
+        if (LoggedInUser is null)
         {
-            return BadRequest("User not found");
+
+            
+
+            result.Error = new Error()
+            {
+                Code = 400,
+                Message = "User not found",
+                Type = "Bad Request"
+            };
+
+
+
+            return BadRequest(result);
         }
         var identityId = new Guid(LoggedInUser.Id);
         var profile = await _unitOfWork.Users.GetByIdentityId(identityId);
         if (profile is null)
         {
-            return BadRequest("User not found");
+           
+
+            result.Error = new Error()
+            {
+                Code = 400,
+                Message = "User not found",
+                Type = "Bad Request"
+            };
+
+
+
+            return BadRequest(result);
         }
 
-        return Ok(profile);
+       
+        result.Content = profile;
+
+        return Ok(result);
     }
 
 
@@ -49,7 +78,7 @@ public class ProfileController:BaseController
             return BadRequest("Invalid Payload");
         }
 
-        //this action below happens beacause we added claims in identity framework to check logged in or not
+        //this action below happens because we added claims in identity framework to check logged in or not
         var LoggedInUser = await _userManager.GetUserAsync(HttpContext.User);
 
 
@@ -75,6 +104,7 @@ public class ProfileController:BaseController
 
         if(isUpdated)
         {
+            await _unitOfWork.CompleteAsync();
             return Ok(userProfile);
         }
 
