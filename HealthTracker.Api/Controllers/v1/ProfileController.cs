@@ -1,4 +1,6 @@
-﻿using HealthTracker.Configuration.Messages;
+﻿using AutoMapper;
+
+using HealthTracker.Configuration.Messages;
 using HealthTracker.DataService.IConfiguration;
 using HealthTracker.Entities.Dtos.Errors;
 using HealthTracker.Entities.Dtos.Generic;
@@ -17,7 +19,8 @@ namespace HealthTracker.Api.Controllers.v1;
 [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
 public class ProfileController:BaseController
 {
-    public ProfileController(IUnitOfWork unitOfWork,UserManager<IdentityUser> userManager):base(unitOfWork, userManager)
+    public ProfileController(IUnitOfWork unitOfWork,UserManager<IdentityUser> userManager
+        ,IMapper mapper):base(unitOfWork, userManager, mapper)
     {
         
     }

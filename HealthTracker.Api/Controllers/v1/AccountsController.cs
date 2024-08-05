@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Text;
 
+using AutoMapper;
+
 using HealthTracker.Authentication.Configuration;
 using HealthTracker.Authentication.Models.Dtos.Generic;
 using HealthTracker.Authentication.Models.Dtos.Incoming;
@@ -32,9 +34,10 @@ public class AccountsController:BaseController
 
        TokenValidationParameters tokenValidationParameters,
        
-       IOptionsMonitor<JwtConfig>optionsMonitor
+       IOptionsMonitor<JwtConfig>optionsMonitor,
+       IMapper mapper
        
-        ):base(unitOfWork, userManager)
+        ):base(unitOfWork, userManager,mapper)
     {
      
         _jwtConfig = optionsMonitor.CurrentValue;

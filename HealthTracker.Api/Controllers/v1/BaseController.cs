@@ -1,4 +1,6 @@
-﻿using HealthTracker.DataService.IConfiguration;
+﻿using AutoMapper;
+
+using HealthTracker.DataService.IConfiguration;
 using HealthTracker.Entities.Dtos.Errors;
 
 using Microsoft.AspNetCore.Identity;
@@ -15,10 +17,14 @@ public class BaseController : ControllerBase
     public IUnitOfWork _unitOfWork;
 
     public UserManager<IdentityUser> _userManager;
-    public BaseController(IUnitOfWork unitOfWork, UserManager<IdentityUser>userManager)
+    public readonly IMapper _mapper;
+    public BaseController(IUnitOfWork unitOfWork,
+        UserManager<IdentityUser>userManager,
+        IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
+        _mapper = mapper;
     }
 
     internal Error PopulateError(int code,string message,string type)

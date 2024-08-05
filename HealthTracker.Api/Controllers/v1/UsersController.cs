@@ -1,4 +1,8 @@
-﻿using HealthTracker.DataService.IConfiguration;
+﻿using AutoMapper;
+
+using HealthTracker.Configuration.Messages;
+using HealthTracker.DataService.IConfiguration;
+using HealthTracker.Entities.Dtos.Generic;
 using HealthTracker.Entities.Dtos.Incoming;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,13 +21,11 @@ public class UsersController : BaseController
 {
 
 
-  
-
-   
-    public UsersController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager) :base(unitOfWork, userManager)
+    public UsersController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager
+        ,IMapper mapper) :base(unitOfWork, userManager, mapper)
     {
 
-       
+
     }
 
     //Get All
@@ -33,7 +35,13 @@ public class UsersController : BaseController
     public async Task<IActionResult> GetUsers()
     {
         var users = await _unitOfWork.Users.All();
-        return Ok(users);
+
+        var result = new PagedResult<User>();
+        result.Content = users.ToList();
+        result.ResultCount = users.Count();
+
+
+        return Ok(result);
     }
 
 
@@ -70,7 +78,19 @@ public class UsersController : BaseController
 
         var user = await _unitOfWork.Users.GetById(id);
 
+        
+        var result = new Result<User>();
 
-        return Ok(user);
+        if(user != null)
+        {
+            result.Content = user;
+            return Ok(result);
+        }
+
+        result.Error = PopulateError(404, ErrorMessages.Users.UserNotFound, ErrorMessages.Generic.ObjectNotFound);
+
+
+
+        return BadRequest(result);
     }
 }

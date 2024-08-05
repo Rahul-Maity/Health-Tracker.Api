@@ -1,5 +1,7 @@
+using System.Reflection;
 using System.Text;
 
+using HealthTracker.Api.Profiles;
 using HealthTracker.Authentication.Configuration;
 using HealthTracker.DataService.Data;
 using HealthTracker.DataService.IConfiguration;
@@ -75,7 +77,11 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddAutoMapper(typeof
+    (UserProfile));
 
+
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
