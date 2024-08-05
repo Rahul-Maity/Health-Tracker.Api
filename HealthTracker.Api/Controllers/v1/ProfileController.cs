@@ -1,4 +1,5 @@
-﻿using HealthTracker.DataService.IConfiguration;
+﻿using HealthTracker.Configuration.Messages;
+using HealthTracker.DataService.IConfiguration;
 using HealthTracker.Entities.Dtos.Errors;
 using HealthTracker.Entities.Dtos.Generic;
 using HealthTracker.Entities.Dtos.Incoming.Profile;
@@ -37,8 +38,8 @@ public class ProfileController:BaseController
             result.Error = new Error()
             {
                 Code = 400,
-                Message = "User not found",
-                Type = "Bad Request"
+                Message = ErrorMessages.Profile.UserNotFound,
+                Type = ErrorMessages.Generic.TypeBadRequest
             };
 
 
@@ -54,8 +55,8 @@ public class ProfileController:BaseController
             result.Error = new Error()
             {
                 Code = 400,
-                Message = "User not found",
-                Type = "Bad Request"
+                Message = ErrorMessages.Profile.UserNotFound,
+                Type = ErrorMessages.Generic.TypeBadRequest
             };
 
 
@@ -73,9 +74,23 @@ public class ProfileController:BaseController
     [HttpPut]
     public async Task<IActionResult> UpdateProfile([FromBody]UpdateProfileDto profile)
     {
+
+        var result =new Result<User>();
+
+
         if (!ModelState.IsValid)
         {
-            return BadRequest("Invalid Payload");
+            result.Error = new Error()
+            {
+                Code = 400,
+                Message = ErrorMessages.Generic.InvalidPayload,
+                Type = ErrorMessages.Generic.TypeBadRequest
+            };
+
+
+
+            return BadRequest(result);
+         
         }
 
         //this action below happens because we added claims in identity framework to check logged in or not
@@ -84,15 +99,37 @@ public class ProfileController:BaseController
 
         if (LoggedInUser is null)
         {
-            return BadRequest("User not found");
+            result.Error = new Error()
+            {
+                Code = 400,
+                Message = ErrorMessages.Profile.UserNotFound,
+                Type = ErrorMessages.Generic.TypeBadRequest
+            };
+
+
+
+            return BadRequest(result);
+
         }
 
 
         var identityId = new Guid(LoggedInUser.Id);
         var userProfile = await _unitOfWork.Users.GetByIdentityId(identityId);
+
+
         if (userProfile is null)
         {
-            return BadRequest("User not found");
+            result.Error = new Error()
+            {
+                Code = 400,
+                Message = ErrorMessages.Profile.UserNotFound,
+                Type = ErrorMessages.Generic.TypeBadRequest
+            };
+
+
+
+            return BadRequest(result);
+      
         }
 
         userProfile.Address = profile.Address;
@@ -105,11 +142,19 @@ public class ProfileController:BaseController
         if(isUpdated)
         {
             await _unitOfWork.CompleteAsync();
-            return Ok(userProfile);
+
+            result.Content = userProfile;
+            return Ok(result);
         }
 
 
-        return BadRequest("something went wrong, plz try again");
+
+        result.Error = PopulateError(500, ErrorMessages.Generic.SomethingWentWrong, ErrorMessages.Generic.UnableToProcess);
+   
+
+
+        return BadRequest(result);
+    
 
     }
 

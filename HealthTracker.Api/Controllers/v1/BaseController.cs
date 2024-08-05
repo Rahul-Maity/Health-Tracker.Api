@@ -1,4 +1,5 @@
 ﻿using HealthTracker.DataService.IConfiguration;
+using HealthTracker.Entities.Dtos.Errors;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,16 @@ public class BaseController : ControllerBase
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
+    }
+
+    internal Error PopulateError(int code,string message,string type)
+    {
+        return new Error()
+        {
+            Code = code,
+            Message = message,
+            Type = type
+        };
     }
 
 }

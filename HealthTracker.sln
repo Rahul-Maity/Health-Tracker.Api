@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthTracker.Entities", "H
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthTracker.Authentication", "HealthTracker.Authentication\HealthTracker.Authentication.csproj", "{60F66B25-C310-45B8-B1C5-A40639F6171F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthTracker.Configuration", "HealthTracker.Configuration\HealthTracker.Configuration.csproj", "{BBD87A7E-7096-4419-BDA3-CCCFE355D8EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{60F66B25-C310-45B8-B1C5-A40639F6171F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60F66B25-C310-45B8-B1C5-A40639F6171F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60F66B25-C310-45B8-B1C5-A40639F6171F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBD87A7E-7096-4419-BDA3-CCCFE355D8EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBD87A7E-7096-4419-BDA3-CCCFE355D8EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBD87A7E-7096-4419-BDA3-CCCFE355D8EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBD87A7E-7096-4419-BDA3-CCCFE355D8EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
