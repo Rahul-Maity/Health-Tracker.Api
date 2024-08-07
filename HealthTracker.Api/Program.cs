@@ -77,8 +77,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<AppDbContext>();
 
-builder.Services.AddAutoMapper(typeof
-    (UserProfile));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 
 builder.Services.AddControllersWithViews();

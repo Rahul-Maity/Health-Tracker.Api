@@ -5,6 +5,7 @@ using HealthTracker.DataService.IConfiguration;
 using HealthTracker.Entities.Dtos.Errors;
 using HealthTracker.Entities.Dtos.Generic;
 using HealthTracker.Entities.Dtos.Incoming.Profile;
+using HealthTracker.Entities.Dtos.outgoing.Profile;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -12,9 +13,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthTracker.Api.Controllers.v1;
-
-
-
 
 [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
 public class ProfileController:BaseController
@@ -32,7 +30,7 @@ public class ProfileController:BaseController
     {
 
         var LoggedInUser = await _userManager.GetUserAsync(HttpContext.User);
-        var result = new Result<User>();
+        var result = new Result<ProfileDto>();
         if (LoggedInUser is null)
         {
 
@@ -67,8 +65,9 @@ public class ProfileController:BaseController
             return BadRequest(result);
         }
 
+        var mappedProfile = _mapper.Map<ProfileDto>(profile);
        
-        result.Content = profile;
+        result.Content = mappedProfile;
 
         return Ok(result);
     }
@@ -78,7 +77,7 @@ public class ProfileController:BaseController
     public async Task<IActionResult> UpdateProfile([FromBody]UpdateProfileDto profile)
     {
 
-        var result =new Result<User>();
+        var result =new Result<ProfileDto>();
 
 
         if (!ModelState.IsValid)
@@ -145,8 +144,8 @@ public class ProfileController:BaseController
         if(isUpdated)
         {
             await _unitOfWork.CompleteAsync();
-
-            result.Content = userProfile;
+            var mappedUser = _mapper.Map<ProfileDto>(profile);
+            result.Content = mappedUser;
             return Ok(result);
         }
 

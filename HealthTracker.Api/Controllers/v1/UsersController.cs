@@ -49,21 +49,18 @@ public class UsersController : BaseController
     [HttpPost]
     public async Task<IActionResult> AddUser(UserDto user)
     {
-        var _user = new User();
-        _user.LastName = user.LastName;
-        _user.FirstName = user.FirstName;
-        _user.Email = user.Email;
 
-        _user.DateOfBirth = DateTime.Parse(user.DateOfBirth).ToUniversalTime();
-        _user.Phone = user.Phone;
-        _user.Country = user.Country;
-        _user.Status = 1;
+        var mappedUser = _mapper.Map<User>(user); 
 
-        await _unitOfWork.Users.Add(_user);
+       
+
+        await _unitOfWork.Users.Add(mappedUser);
         await _unitOfWork.CompleteAsync();
 
+        var result = new Result<UserDto>();
+        result.Content = user;
 
-        return CreatedAtRoute("GetUser", new { id = _user.Id }, user);
+        return CreatedAtRoute("GetUser", new { id = mappedUser.Id }, result);
 
     }
 
