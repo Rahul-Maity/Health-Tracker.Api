@@ -4,6 +4,7 @@ using HealthTracker.Configuration.Messages;
 using HealthTracker.DataService.IConfiguration;
 using HealthTracker.Entities.Dtos.Generic;
 using HealthTracker.Entities.Dtos.Incoming;
+using HealthTracker.Entities.Dtos.outgoing.Profile;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -67,7 +68,7 @@ public class UsersController : BaseController
 
 
     //Get based on id 
-    [HttpGet]
+    [HttpGet]   
     [Route("GetUser", Name = "GetUser")]
     public async Task<IActionResult> GetUser(Guid id)
     {
@@ -76,11 +77,12 @@ public class UsersController : BaseController
         var user = await _unitOfWork.Users.GetById(id);
 
         
-        var result = new Result<User>();
+        var result = new Result<ProfileDto>();
 
         if(user != null)
         {
-            result.Content = user;
+            var mappedProfile = _mapper.Map<ProfileDto>(user);
+            result.Content = mappedProfile;
             return Ok(result);
         }
 
