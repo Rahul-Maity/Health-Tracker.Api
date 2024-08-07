@@ -8,6 +8,8 @@ using HealthTracker.DataService.IConfiguration;
 using HealthTracker.DataService.IRepository;
 using HealthTracker.DataService.Repository;
 
+
+
 using Microsoft.Extensions.Logging;
 
 namespace HealthTracker.DataService.Data;
@@ -18,6 +20,7 @@ public class UnitOfWork:IUnitOfWork,IDisposable
     public IUserRepository Users { get; private set; }
 
     public IRefreshTokenRepository RefreshTokens { get; private set; }
+    public IHealthDataRepository HealthData { get; private set; }
 
     public UnitOfWork(AppDbContext context,ILoggerFactory loggerFactory)
     {
